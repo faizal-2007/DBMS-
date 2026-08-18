@@ -1,4 +1,5 @@
 DBMS Learning – Complete Notes, Definitions & Formulas
+
 📚 Overview
 
 This README contains comprehensive DBMS (Database Management System) notes covering database fundamentals, relational concepts, keys, constraints, ER modeling, relational algebra, SQL, normalization, transactions, concurrency control, indexing, recovery, and important formulas.
