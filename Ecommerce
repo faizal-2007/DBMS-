@@ -233,7 +233,7 @@ on oi.product_id = p.product_id ;
 |      107 | HD Monitor          |        1 |
 +----------+---------------------+----------+
 
-08. Find the total quan ty sold for EVERY product. Display product_name and total quantity. If a product has never been sold, show 0 or NULL.  
+08. Find the total quantity sold for EVERY product. Display product_name and total quantity. If a product has never been sold, show 0 or NULL.  
 
 select p.product_name , coalesce(sum(oi.quantity),0) as total_quantity
 from products p 
