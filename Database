@@ -1147,4 +1147,125 @@ on e.mgr = m.empno ;
 |  7934 | MILLER | 7777 | NULL         |
 +-------+--------+------+--------------+
 
+63 . Solve the following queries 
+
+create table salesman (
+    sid int primary key ,
+    sname varchar(50) ,
+    address varchar(100) 
+);
+
+insert into salesman values 
+(101, 'Ravi', 'Pune'),
+(102, 'Rahul', 'Mumbai'),
+(103, 'Amit', 'Pune'),
+(104, 'Suresh', 'Delhi');
+
+select * from salesman ;
++-----+--------+---------+
+| sid | sname  | address |
++-----+--------+---------+
+| 101 | Ravi   | Pune    |
+| 102 | Rahul  | Mumbai  |
+| 103 | Amit   | Pune    |
+| 104 | Suresh | Delhi   |
++-----+--------+---------+
+
+create table category (
+    cid int primary key ,
+    cname varchar(50)  ,
+    description varchar(100) 
+);
+
+insert into category values 
+(1, 'Electronics', 'Electronic products'),
+(2, 'Clothing', 'Clothing products'),
+(3, 'Furniture', 'Furniture products');
+
+select * from category ;
++-----+-------------+---------------------+
+| cid | cname       | description         |
++-----+-------------+---------------------+
+|   1 | Electronics | Electronic products |
+|   2 | Clothing    | Clothing products   |
+|   3 | Furniture   | Furniture products  |
++-----+-------------+---------------------+
+
+create table product (
+    pid int primary key ,
+    pname varchar(50) ,
+    price decimal(10,2) ,
+    qty int ,
+    cid int ,
+    sid int ,
+    foreign key (cid) references category(cid),
+    foreign key (sid) references salesman(sid)
+);
+
+insert into product values 
+(1001, 'Laptop', 55000, 10, 1, 101),
+(1002, 'Mobile', 25000, 20, 1, 102),
+(1003, 'Shirt', 1200, 50, 2, 103),
+(1004, 'Chair', 2500, 15, 3, 104),
+(1005, 'Headphones', 2000, 30, 1, 101);
+
+select * from product ;
++------+------------+----------+------+------+------+
+| pid  | pname      | price    | qty  | cid  | sid  |
++------+------------+----------+------+------+------+
+| 1001 | Laptop     | 55000.00 |   10 |    1 |  101 |
+| 1002 | Mobile     | 25000.00 |   20 |    1 |  102 |
+| 1003 | Shirt      |  1200.00 |   50 |    2 |  103 |
+| 1004 | Chair      |  2500.00 |   15 |    3 |  104 |
+| 1005 | Headphones |  2000.00 |   30 |    1 |  101 |
++------+------------+----------+------+------+------+
+
+a. List all the product name, their category name and name of the person who sold that product.
+
+select p.pname as product_name,c.cname as category_name, s.sname as salesman_name
+from product p 
+join category c 
+on p.cid = c.cid 
+join salesman s 
+on p.sid = s.sid ;
++--------------+---------------+---------------+
+| product_name | category_name | salesman_name |
++--------------+---------------+---------------+
+| Laptop       | Electronics   | Ravi          |
+| Mobile       | Electronics   | Rahul         |
+| Headphones   | Electronics   | Ravi          |
+| Shirt        | Clothing      | Amit          |
+| Chair        | Furniture     | Suresh        |
++--------------+---------------+---------------+
+
+b. List all the product name and salesman name for all the salesman who stays in Pune.
+
+select p.pname as product_name,s.sname as salesman_name
+from product p 
+join salesman s 
+on p.sid = s.sid 
+where s.address = 'pune' ;
++--------------+---------------+
+| product_name | salesman_name |
++--------------+---------------+
+| Laptop       | Ravi          |
+| Headphones   | Ravi          |
+| Shirt        | Amit          |
++--------------+---------------+
+
+c. List all the product name and category name.
+
+select p.pname as product_name, c.cname as category_name
+from product p 
+join category c 
+on p.cid = c.cid ;
++--------------+---------------+
+| product_name | category_name |
++--------------+---------------+
+| Laptop       | Electronics   |
+| Mobile       | Electronics   |
+| Headphones   | Electronics   |
+| Shirt        | Clothing      |
+| Chair        | Furniture     |
++--------------+---------------+
 
