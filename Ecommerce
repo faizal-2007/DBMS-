@@ -136,8 +136,7 @@ where product_id = 5 ;
 |          5 | Webcam       | 65.00 |
 +------------+--------------+-------+
 
-02. Order 105 was cancelled. Delete it from the orders table. (Observe how the foreign key ON 
-DELETE CASCADE handles the order_items). 
+02. Order 105 was cancelled. Delete it from the orders table. (Observe how the foreign key ON DELETE CASCADE handles the order_items). 
 
 delete from orders 
 where order_id = 105 ;
@@ -147,8 +146,7 @@ where order_id = 105 ;
 
 Empty set 
 
-03. List the first_name and last_name of customers alongside the order_id and order_date of the 
-orders they placed. 
+03. List the first_name and last_name of customers alongside the order_id and order_date of the orders they placed. 
 
 select c.first_name, c.last_name, o.order_id, o.order_date from customers c 
 inner join orders o 
@@ -163,8 +161,7 @@ on c.customer_id = o.customer_id ;
 | Charlie    | Brown     |      104 | 2026-08-12 |
 +------------+-----------+----------+------------+
 
-04. List ALL customers by name and their order_ids. Include customers who have never placed 
-an order. 
+04. List ALL customers by name and their order_ids. Include customers who have never placed an order. 
 
 select c.first_name, c.last_name, o.order_id from customers c
 left join orders o 
@@ -183,8 +180,7 @@ on c.customer_id = o.customer_id ;
 | Grace      | Hopper    |     NULL |
 +------------+-----------+----------+
 
-05. List ALL orders by order_id alongside the first_name of the customer who placed them. 
-Include orders that have no associated customer. 
+05. List ALL orders by order_id alongside the first_name of the customer who placed them. Include orders that have no associated customer. 
 
 select o.order_id, c.first_name 
 from orders o 
@@ -202,8 +198,7 @@ on o.customer_id = c.customer_id ;
 |      104 | Charlie    |
 +----------+------------+
 
-06. Find the total amount spent by each registered customer. Display first_name and the 
-SUM(total_amount).
+06. Find the total amount spent by each registered customer. Display first_name and the SUM(total_amount).
 
 select  c.first_name, sum(o.total_amount) as total_spent 
 from customers c 
@@ -219,8 +214,7 @@ group by c.customer_id, c.first_name ;
 | Charlie    |       85.00 |
 +------------+-------------+
 
-07. Display a master receipt list: show the order_id, the product_name, and the quan ty 
-purchased. 
+07. Display a master receipt list: show the order_id, the product_name, and the quantity purchased. 
 
 select oi.order_id, p.product_name, oi.quantity 
 from order_items oi 
@@ -239,8 +233,7 @@ on oi.product_id = p.product_id ;
 |      107 | HD Monitor          |        1 |
 +----------+---------------------+----------+
 
-08. Find the total quan ty sold for EVERY product. Display product_name and total quan ty. If a 
-product has never been sold, show 0 or NULL.  
+08. Find the total quan ty sold for EVERY product. Display product_name and total quantity. If a product has never been sold, show 0 or NULL.  
 
 select p.product_name , coalesce(sum(oi.quantity),0) as total_quantity
 from products p 
@@ -260,8 +253,7 @@ group by p.product_id, p.product_name ;
 | Desk Lamp           |              0 |
 +---------------------+----------------+
 
-09.  The marke ng team wants to email people who created an account but haven't bought anything. 
-Find the first_name and email of customers who have exactly zero orders.  
+09.  The marke ng team wants to email people who created an account but haven't bought anything. Find the first_name and email of customers who have exactly zero orders.  
 
 select c.first_name, c.email 
 from customers c
@@ -278,8 +270,7 @@ where o.order_id is null ;
 | Grace      | grace@email.com |
 +------------+-----------------+
 
-10. Generate a complete audit report. Show all customer names and all order IDs. If a customer has 
-no orders, they should s ll appear. If an order has no registered customer, it should s ll appear. 
+10. Generate a complete audit report. Show all customer names and all order IDs. If a customer has no orders, they should s ll appear. If an order has no registered customer, it should s ll appear. 
 
 select c.first_name, c.last_name, o.order_id 
 from customers c 
@@ -307,9 +298,7 @@ where c.customer_id is null ;
 | NULL       | NULL      |      107 |
 +------------+-----------+----------+
 
-11. The total_amount in the orders table is suspected to be incorrect for some orders. Write a query 
-to calculate the actual total for every order by joining orders, order_items, and products, mul plying 
-price * quan ty, and grouping by order_id. 
+11. The total_amount in the orders table is suspected to be incorrect for some orders. Write a query to calculate the actual total for every order by joining orders, order_items, and products, multiplying price * quantity, and grouping by order_id. 
 
 select o.order_id, sum(p.price * oi.quantity) as actual_total 
 from orders o 
@@ -330,8 +319,7 @@ group by o.order_id ;
 |      107 |       200.00 |
 +----------+--------------+
 
-12. Find the "Power Shoppers". List the first_name of customers who have purchased a grand total of 
-more than 1 physical item across all their lifeme orders. 
+12. Find the "Power Shoppers". List the first_name of customers who have purchased a grand total of more than 1 physical item across all their lifeme orders. 
 
 select c.first_name, sum(oi.quantity) as total_items 
 from customers c 
