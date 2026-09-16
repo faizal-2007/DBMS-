@@ -1147,7 +1147,7 @@ on e.mgr = m.empno ;
 |  7934 | MILLER | 7777 | NULL         |
 +-------+--------+------+--------------+
 
-63 . Solve the following queries 
+63. Solve the following queries 
 
 create table salesman (
     sid int primary key ,
@@ -1269,3 +1269,402 @@ on p.cid = c.cid ;
 | Chair        | Furniture     |
 +--------------+---------------+
 
+64. Create the following table and solve the following questions 
+
+create table faculty (
+    fid int primary key ,
+    fname varchar(50) ,
+    skill1 varchar(50) ,
+    skill2 varchar(50) 
+);
+
+insert into faculty values 
+(10, 'Dr. Rahul Sharma', 'Database', 'SQL'),
+(11, 'Dr. Priya Nair', 'Python', 'Machine Learning'),
+(12, 'Prof. Arjun Rao', 'Networking', 'Cloud'),
+(13, 'Prof. Sneha Patil', 'Web Development', 'JavaScript'),
+(14, 'Dr. Amit Kumar', 'Data Science', 'Statistics');
+
+select * from faculty ;
++-----+-------------------+-----------------+------------------+
+| fid | fname             | skill1          | skill2           |
++-----+-------------------+-----------------+------------------+
+|  10 | Dr. Rahul Sharma  | Database        | SQL              |
+|  11 | Dr. Priya Nair    | Python          | Machine Learning |
+|  12 | Prof. Arjun Rao   | Networking      | Cloud            |
+|  13 | Prof. Sneha Patil | Web Development | JavaScript       |
+|  14 | Dr. Amit Kumar    | Data Science    | Statistics       |
++-----+-------------------+-----------------+------------------+
+
+create table room (
+    roomid int primary key ,
+    rname varchar(50) ,
+    rloc varchar(50) 
+);
+
+insert into room values 
+(100, 'Computer Lab 1', '1st Floor'),
+(101, 'Computer Lab 2', '1st Floor'),
+(102, 'Seminar Hall', '2nd Floor'),
+(103, 'Smart Classroom 1', '2nd Floor'),
+(104, 'Smart Classroom 2', '3rd Floor');
+
+select * from room ;
++--------+-------------------+-----------+
+| roomid | rname             | rloc      |
++--------+-------------------+-----------+
+|    100 | Computer Lab 1    | 1st Floor |
+|    101 | Computer Lab 2    | 1st Floor |
+|    102 | Seminar Hall      | 2nd Floor |
+|    103 | Smart Classroom 1 | 2nd Floor |
+|    104 | Smart Classroom 2 | 3rd Floor |
++--------+-------------------+-----------+
+
+create table courses (
+    cid int primary key ,
+    cname varchar(50) ,
+    rid int ,
+    fid int ,
+    foreign key (rid) references room(roomid) ,
+    foreign key (fid) references faculty(fid)
+);
+
+insert into courses values 
+(201, 'Database Management Systems', 100, 10),
+(202, 'Python Programming', 101, 11),
+(203, 'Computer Networks', 102, 12),
+(204, 'Web Development', NULL, 13),
+(205, 'Data Science', 104, 14),
+(206, 'Artificial Intelligence', NULL, NULL);
+
+select * from courses ;
++-----+-----------------------------+------+------+
+| cid | cname                       | rid  | fid  |
++-----+-----------------------------+------+------+
+| 201 | Database Management Systems |  100 |   10 |
+| 202 | Python Programming          |  101 |   11 |
+| 203 | Computer Networks           |  102 |   12 |
+| 204 | Web Development             | NULL |   13 |
+| 205 | Data Science                |  104 |   14 |
+| 206 | Artificial Intelligence     | NULL | NULL |
++-----+-----------------------------+------+------+
+
+a. List all courses for which no room is assigned and all rooms which are available.
+
+-> Courses without a room 
+select * 
+from courses 
+where rid is null ;
++-----+-------------------------+------+------+
+| cid | cname                   | rid  | fid  |
++-----+-------------------------+------+------+
+| 204 | Web Development         | NULL |   13 |
+| 206 | Artificial Intelligence | NULL | NULL |
++-----+-------------------------+------+------+
+
+-> Available room 
+select r.* 
+from room r 
+left join courses c 
+on r.roomid = c.rid 
+where c.rid is null ;
++--------+-------------------+-----------+
+| roomid | rname             | rloc      |
++--------+-------------------+-----------+
+|    103 | Smart Classroom 1 | 2nd Floor |
++--------+-------------------+-----------+
+
+b. List all faculties who are not allocated to any course and rooms which are not allocated to any course.
+
+-> Faculty without a course 
+select f.* 
+from faculty f 
+left join courses c 
+on f.fid = c.cid 
+where c.fid is null ;
++-----+-------------------+-----------------+------------------+
+| fid | fname             | skill1          | skill2           |
++-----+-------------------+-----------------+------------------+
+|  10 | Dr. Rahul Sharma  | Database        | SQL              |
+|  11 | Dr. Priya Nair    | Python          | Machine Learning |
+|  12 | Prof. Arjun Rao   | Networking      | Cloud            |
+|  13 | Prof. Sneha Patil | Web Development | JavaScript       |
+|  14 | Dr. Amit Kumar    | Data Science    | Statistics       |
++-----+-------------------+-----------------+------------------+
+
+-> Rooms without a course 
+select r.* 
+from room r 
+left join courses c 
+on r.roomid = c.rid 
+where c.rid is not null ;
++--------+-------------------+-----------+
+| roomid | rname             | rloc      |
++--------+-------------------+-----------+
+|    100 | Computer Lab 1    | 1st Floor |
+|    101 | Computer Lab 2    | 1st Floor |
+|    102 | Seminar Hall      | 2nd Floor |
+|    104 | Smart Classroom 2 | 3rd Floor |
++--------+-------------------+-----------+
+
+c. List all rooms which are allocated or not allocated to any courses.
+
+select 
+    r.roomid ,
+    r.rname ,
+    r.rloc ,
+    c.cid ,
+    c.cname 
+from room r 
+left join courses c 
+on r.roomid = c.rid ;
++--------+-------------------+-----------+------+-----------------------------+
+| roomid | rname             | rloc      | cid  | cname                       |
++--------+-------------------+-----------+------+-----------------------------+
+|    100 | Computer Lab 1    | 1st Floor |  201 | Database Management Systems |
+|    101 | Computer Lab 2    | 1st Floor |  202 | Python Programming          |
+|    102 | Seminar Hall      | 2nd Floor |  203 | Computer Networks           |
+|    103 | Smart Classroom 1 | 2nd Floor | NULL | NULL                        |
+|    104 | Smart Classroom 2 | 3rd Floor |  205 | Data Science                |
++--------+-------------------+-----------+------+-----------------------------+
+
+d. List all rooms which are not allocated to any courses.
+
+select r.* 
+from room r 
+left join courses c 
+on r.roomid = c.rid 
+where c.rid is null ;
++--------+-------------------+-----------+
+| roomid | rname             | rloc      |
++--------+-------------------+-----------+
+|    103 | Smart Classroom 1 | 2nd Floor |
++--------+-------------------+-----------+
+
+e. Display courses and faculty assigned to those courses whose special skill is Database.
+
+select 
+    c.cid ,
+    c.cname ,
+    f.fid ,
+    f.fname ,
+    f.skill1 ,
+    f.skill2 
+from courses c 
+join faculty f 
+on c.fid = f.fid 
+where lower(f.skill1) = 'database'
+    or lower(f.skill2) = 'database' ;
++-----+-----------------------------+-----+------------------+----------+--------+
+| cid | cname                       | fid | fname            | skill1   | skill2 |
++-----+-----------------------------+-----+------------------+----------+--------+
+| 201 | Database Management Systems |  10 | Dr. Rahul Sharma | Database | SQL    |
++-----+-----------------------------+-----+------------------+----------+--------+
+
+f. Display time table, it should contain course, faculty and room details.
+
+select 
+    c.cid ,
+    c.cname as course_name ,
+    f.fid ,
+    f.fname as faculty_name ,
+    r.roomid ,
+    r.rname as room_name ,
+    r.rloc as room_loaction 
+from courses c 
+join faculty f 
+on c.fid = f.fid 
+left join room r 
+on c.rid = r.roomid ;
++-----+-----------------------------+-----+-------------------+--------+-------------------+---------------+
+| cid | course_name                 | fid | faculty_name      | roomid | room_name         | room_loaction |
++-----+-----------------------------+-----+-------------------+--------+-------------------+---------------+
+| 201 | Database Management Systems |  10 | Dr. Rahul Sharma  |    100 | Computer Lab 1    | 1st Floor     |
+| 202 | Python Programming          |  11 | Dr. Priya Nair    |    101 | Computer Lab 2    | 1st Floor     |
+| 203 | Computer Networks           |  12 | Prof. Arjun Rao   |    102 | Seminar Hall      | 2nd Floor     |
+| 204 | Web Development             |  13 | Prof. Sneha Patil |   NULL | NULL              | NULL          |
+| 205 | Data Science                |  14 | Dr. Amit Kumar    |    104 | Smart Classroom 2 | 3rd Floor     |
++-----+-----------------------------+-----+-------------------+--------+-------------------+---------------+
+
+65. Create the following table and solve the following queries 
+
+create table shop_category (
+    scid int primary key ,
+    scname varchar(50) not null unique ,
+    description varchar(100) 
+);
+
+insert into shop_category values 
+(1, 'Chips', 'Very crunchy'),
+(2, 'Chocolate', 'Very chocolaty'),
+(3, 'Snacks', 'Yummy'),
+(4, 'Cold Drinks', 'Thanda thanda cool cool');
+
+select * from shop_category ;
++------+-------------+-------------------------+
+| scid | scname      | description             |
++------+-------------+-------------------------+
+|    1 | Chips       | Very crunchy            |
+|    2 | Chocolate   | Very chocolaty          |
+|    3 | Snacks      | Yummy                   |
+|    4 | Cold Drinks | Thanda thanda cool cool |
++------+-------------+-------------------------+
+
+create table shop_salesman ( 
+    ssid int primary key ,
+    ssname varchar(50) not null ,
+    city varchar(50) 
+);
+
+insert into shop_salesman values 
+(11, 'Rahul', 'Pune'),
+(12, 'Kirti', 'Mumbai'),
+(13, 'Prasad', 'Nashik'),
+(14, 'Arnav', 'Amaravati');
+
+select * from shop_salesman ;
++------+--------+-----------+
+| ssid | ssname | city      |
++------+--------+-----------+
+|   11 | Rahul  | Pune      |
+|   12 | Kirti  | Mumbai    |
+|   13 | Prasad | Nashik    |
+|   14 | Arnav  | Amaravati |
++------+--------+-----------+
+
+create table shop_products (
+    sprodid int primary key ,
+    spname varchar(50) not null unique ,
+    sqty int default 20 check (sqty > 0 ) ,
+    sprice decimal(10,2) default 20.00 ,
+    scatid int ,
+    ssid int ,
+    foreign key(scatid) references shop_category(scid) , 
+    foreign key(ssid) references shop_salesman(ssid) 
+);
+
+insert into shop_products values 
+(123, 'Lays', 30, 30.00, 1, 12),
+(111, 'Pepsi', 40, 50.00, 4, 11),
+(134, 'Nachos', 50, 50.00, 1, 12),
+(124, 'Pringles', 40, 60.00, 1, 14),
+(125, 'Dairy Milk', 40, 60.00, 2, 14);
+
+select * from shop_products ;
++---------+------------+------+--------+--------+------+
+| sprodid | spname     | sqty | sprice | scatid | ssid |
++---------+------------+------+--------+--------+------+
+|     111 | Pepsi      |   40 |  50.00 |      4 |   11 |
+|     123 | Lays       |   30 |  30.00 |      1 |   12 |
+|     124 | Pringles   |   40 |  60.00 |      1 |   14 |
+|     125 | Dairy Milk |   40 |  60.00 |      2 |   14 |
+|     134 | Nachos     |   50 |  50.00 |      1 |   12 |
++---------+------------+------+--------+--------+------+
+
+a. List all the products with category chips.
+
+select 
+    p.sprodid , 
+    p.spname ,
+    c.scname 
+from shop_products p
+join shop_category c 
+on p.scatid = c.scid 
+where c.scname = 'chips' ;
++---------+----------+--------+
+| sprodid | spname   | scname |
++---------+----------+--------+
+|     123 | Lays     | Chips  |
+|     124 | Pringles | Chips  |
+|     134 | Nachos   | Chips  |
++---------+----------+--------+
+
+b. Display all the products sold by Kirti.
+
+select 
+    p.sprodid , 
+    p.spname ,
+    s.ssname 
+from shop_products p
+join shop_salesman s 
+on p.ssid = s.ssid 
+where s.ssname = 'kirti' ;
++---------+--------+--------+
+| sprodid | spname | ssname |
++---------+--------+--------+
+|     123 | Lays   | Kirti  |
+|     134 | Nachos | Kirti  |
++---------+--------+--------+
+
+c. Display all the salesman who did not sold any product.
+
+select 
+    s.ssid ,
+    s.ssname ,
+    s.city 
+from shop_salesman s
+left join shop_products p 
+on s.ssid = p.ssid 
+where p.ssid is null ;
++------+--------+--------+
+| ssid | ssname | city   |
++------+--------+--------+
+|   13 | Prasad | Nashik |
++------+--------+--------+
+
+d. Display all the category for which no product is there.
+
+select 
+    c.scid ,
+    c.scname ,
+    c.description 
+from shop_category c 
+left join shop_products p
+on c.scid = p.scatid 
+where p.scatid is null ;
++------+--------+-------------+
+| scid | scname | description |
++------+--------+-------------+
+|    3 | Snacks | Yummy       |
++------+--------+-------------+
+
+e. Display all the products with no category assigned.
+
+select 
+    p.sprodid,
+    p.spname,
+    p.sqty,
+    p.sprice
+from shop_products p
+left join shop_category c 
+on  p.scatid = c.scid 
+where p.scatid is null ;
+Empty set
+
+f. List all the salesman who stays in city with name starts with P or N.
+
+select * 
+from 
+shop_salesman 
+where city like 'p%' or city like 'n%' ;
++------+--------+--------+
+| ssid | ssname | city   |
++------+--------+--------+
+|   11 | Rahul  | Pune   |
+|   13 | Prasad | Nashik |
++------+--------+--------+
+
+g. Add new coloumn in salesman table by name credit limit. 
+
+alter table shop_salesman 
+add credit_limit decimal(10,2) ;
+
+desc shop_salesman ;
++--------------+---------------+------+-----+---------+-------+
+| Field        | Type          | Null | Key | Default | Extra |
++--------------+---------------+------+-----+---------+-------+
+| ssid         | int           | NO   | PRI | NULL    |       |
+| ssname       | varchar(50)   | NO   |     | NULL    |       |
+| city         | varchar(50)   | YES  |     | NULL    |       |
+| credit_limit | decimal(10,2) | YES  |     | NULL    |       |
++--------------+---------------+------+-----+---------+-------+
